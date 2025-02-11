@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.3.1",
+    "@scalar/nextjs-api-reference": "^0.5.7",
     "next": "^15.1.7",
     "node-mocks-http": "^1.16.2",
     "react": "^19.0.0",
