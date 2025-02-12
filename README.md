@@ -83,12 +83,24 @@ curl http://127.0.0.1:8000/api/users
 ```
 
 ---
+## Docs Api
+### generate docs
+```sh
+php artisan scribe:generate
+```
+
+### See docs
+```sh
+curl http://127.0.0.1:8000/docs
+```
+
+---
 
 ## 📊 Technologies Used
 - **Laravel** - PHP framework
 - **PostgreSQL** - Database
-- **PestPHP** - Testing framework
 - **Eloquent** - ORM for database management
+- **Scalar** - Documentation API
 
 ---
 
