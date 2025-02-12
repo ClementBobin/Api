@@ -1,0 +1,87 @@
+# Dotnet API Project
+
+## 📌 Overview
+This project is a .NET API structured with best practices, featuring ORM integration, testing, seeding, and Scalar UI instead of Swagger.
+
+## 🏗️ Tech Stack
+- **.NET 8 Web API** - API layer
+- **Entity Framework Core** - ORM for database operations
+- **xUnit** - Unit testing framework
+- **Scalar UI** - Alternative to Swagger
+- **SQL Server** - Database
+
+## 📂 Directory Structure
+```
+DotnetApi/
+├── API/            # API project
+├── BL/             # Business Logic Layer
+├── DAL/            # Data Access Layer (ORM)
+│   ├── Entities/   # Database Models
+│   ├── DatabaseSeeder.cs # Seed Data
+├── DTO/            # Data Transfer Objects
+├── Tools/          # Utility Functions
+├── Tests/          # Unit & Integration Tests
+└── DotnetApi.sln   # Solution File
+```
+
+## 🚀 Installation & Setup
+1. **Clone the repository**
+   ```sh
+   git clone <repo-url>
+   cd DotnetApi
+   ```
+
+2. **Install dependencies**
+   ```sh
+   dotnet restore
+   ```
+
+3. **Configure the database** (Edit `appsettings.json` in `API/`)
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=localhost;Database=DotnetApi;Trusted_Connection=True;"
+   }
+   ```
+
+4. **Run Migrations & Seed Database**
+   ```sh
+   dotnet ef migrations add InitialCreate --project DAL --startup-project API
+   dotnet ef database update --project DAL --startup-project API
+   dotnet run --project API
+   ```
+
+## 🏗️ Seed Data
+The `DatabaseSeeder` class initializes the database with users.
+```csharp
+public static void Seed(ApplicationDbContext context)
+{
+    if (!context.Users.Any())
+    {
+        context.Users.AddRange(
+            new User { Name = "Alice", Email = "alice@example.com" },
+            new User { Name = "Bob", Email = "bob@example.com" }
+        );
+        context.SaveChanges();
+    }
+}
+```
+
+## 🧪 Running Tests
+Execute unit tests with:
+```sh
+cd Tests
+dotnet test
+```
+
+## 🔍 Scalar UI
+Instead of Swagger, this project uses **Scalar UI** for API exploration. Once the server is running, access:
+```
+http://localhost:5000/scalar/v1
+```
+
+## 📜 License
+MIT License
+
+---
+✅ **Project Ready!** 🚀
+
