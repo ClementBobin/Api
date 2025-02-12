@@ -1,9 +1,6 @@
 import Fastify from 'fastify'
 import FastifySwagger from '@fastify/swagger'
-import FastifyStatic from '@fastify/static'
 import ScalarApiReference from '@scalar/fastify-api-reference'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import dossierRoutes from './routes/dossierRoutes'
 import userRoutes from './routes/userRoutes'
 
@@ -29,20 +26,11 @@ await fastify.register(FastifySwagger, {
   },
 })
 
-// Register dossier routes
-await fastify.register(dossierRoutes)
+// Register dossier routes with /api/v1 prefix
+await fastify.register(dossierRoutes, { prefix: '/api/v1' })
 
-// R
-await fastify.register(userRoutes)
-
-// Static file serving
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-fastify.register(FastifyStatic, {
-  root: path.join(__dirname, 'public'),
-  prefix: '/public/',
-})
+// Register user routes with /api/v1 prefix
+await fastify.register(userRoutes, { prefix: '/api/v1' })
 
 // API documentation
 await fastify.register(ScalarApiReference, {
