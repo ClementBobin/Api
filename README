@@ -1,0 +1,110 @@
+# Fastify API with Prisma, Testing, and Seeding
+
+## 📌 Overview
+This project is a Fastify API using Prisma as the ORM, with a PostgreSQL database. It includes:
+- **Prisma** for database management
+- **Fastify** as the web framework
+- **Vitest** for testing
+- **Database seeding** for initial data
+
+---
+
+## 📂 Project Structure
+```
+fastify-api/
+│── prisma/
+│   ├── schema.prisma    # Prisma schema definition
+│   ├── migrations/      # Database migrations
+│   ├── seed.ts          # Database seed script
+│
+│── src/
+│   ├── server.ts        # Main Fastify server
+│   ├── routes/          # API routes
+│   │   ├── userRoutes.ts      # User API route
+│   │   └── ...
+│   ├── controllers/          # API Controller
+│   │   ├── userController.ts  # User API controller
+│   │   └── ...
+│   └── lib         # Library functions
+│       └── prismaClient.ts  # Prisma library
+│
+│── test/
+│   ├── server.test.ts   # API tests
+│   └── ...
+│
+│── .env                 # Environment variables
+│── package.json         # Project dependencies & scripts
+│── tsconfig.json        # TypeScript configuration
+│── README.md            # Documentation
+```
+
+---
+
+## 🚀 Getting Started
+
+### **1️⃣ Install Dependencies**
+```sh
+npm install
+```
+
+### **2️⃣ Set Up the Database**
+1. Create a PostgreSQL database
+2. Set the connection string in `.env`:
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/mydb"
+   ```
+
+### **3️⃣ Run Migrations**
+```sh
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
+### **4️⃣ Seed the Database**
+```sh
+npm run seed
+```
+
+### **5️⃣ Start the Server**
+```sh
+npm run dev
+```
+Server runs at: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🧪 Testing
+Run tests with:
+```sh
+npm test
+```
+
+---
+
+## 🔍 API Endpoints
+### **GET /users**
+Fetches all users.
+```sh
+curl http://localhost:3000/users
+```
+
+---
+
+## 📊 Technologies Used
+- **Fastify** - High-performance web framework
+- **Prisma** - ORM for database management
+- **Vitest** - Testing framework
+- **PostgreSQL** - Database
+- **TypeScript** - Strongly-typed JavaScript
+
+---
+
+## 🎯 Future Enhancements
+- Add more API routes
+- Implement authentication
+- Deploy to production
+
+---
+
+**🚀 Happy Coding!**
+
