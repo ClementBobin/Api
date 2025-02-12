@@ -1,176 +1,103 @@
-# Next.js API with Prisma, Testing, and Seeding
+# Laravel API with Testing and Seeding
 
-## 🚀 Project Overview
-This project is a **Next.js API** setup with **Prisma** for database management, **Jest + Supertest** for testing, and a **seeding script** to populate initial data. It uses **PostgreSQL** (NeonDatabase recommended).
-
----
-
-## 📦 Tech Stack
-- **Next.js** – API routes and server-side logic
-- **Prisma** – ORM for database operations
-- **Jest** – Testing framework
-- **Supertest** – API request testing
-- **PostgreSQL** – Database (NeonDatabase recommended)
+## 📌 Overview
+This project is a Laravel API with:
+- **PostgreSQL** as the database
+- **Laravel Eloquent** for ORM
+- **Database seeding** for initial data
+- **PestPHP** for testing
 
 ---
 
-## 📂 Directory Structure
+## 📂 Project Structure
 ```
-my-next-api/
-│── prisma/
-│   ├── schema.prisma  # Database schema
-│   ├── seed.ts        # Database seeding script
-│── pages/api/
-│   ├── users.ts       # API endpoint for fetching users
-│── __tests__/
-│   ├── api.test.ts    # API test file
-│── .env               # Environment variables (DATABASE_URL)
-│── package.json       # Dependencies & scripts
+laravel-api/
+│── app/
+│   ├── Models/User.php       # User model
+│
+│── database/
+│   ├── migrations/           # Database migrations
+│   ├── seeders/UserSeeder.php # Seeder file
+│
+│── routes/
+│   ├── api.php               # API routes
+│
+│── tests/
+│   ├── Feature/UserTest.php  # API tests
+│
+│── .env                      # Environment variables
+│── package.json              # Dependencies
+│── README.md                 # Documentation
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+## 🚀 Getting Started
 
-### 1️⃣ Clone the Repository
+### **1️⃣ Install Dependencies**
 ```sh
-git clone https://github.com/your-repo/my-next-api.git
-cd my-next-api
+composer install
 ```
 
-### 2️⃣ Install Dependencies
-```sh
-npm install
-```
-
-### 3️⃣ Configure Database
-Edit `.env` and set your **PostgreSQL database URL**:
+### **2️⃣ Configure Database**
+Edit `.env`:
 ```env
-DATABASE_URL="postgresql://user:password@your-neon-db-host/dbname"
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=laravel_api
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+Run migrations:
+```sh
+php artisan migrate
 ```
 
-### 4️⃣ Initialize Prisma & Migrate Database
+### **3️⃣ Seed the Database**
 ```sh
-npx prisma generate
-npx prisma migrate dev --name init
+php artisan db:seed --class=UserSeeder
 ```
 
-### 5️⃣ Run the Seed Script
+### **4️⃣ Start the Server**
 ```sh
-npx prisma db seed
+php artisan serve
 ```
-
-### 6️⃣ Start the Next.js Server
-```sh
-npm run dev
-```
+Server runs at: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
 
-## 📜 API Routes
-
-### **GET /api/users**
-Fetch all users from the database.
-```ts
-import { PrismaClient } from '@prisma/client'
-import type { NextApiRequest, NextApiResponse } from 'next'
-
-const prisma = new PrismaClient()
-
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-    try {
-        const users = await prisma.user.findMany()
-        return res.status(200).json({ users })
-    } catch (error) {
-        return res.status(500).json({ message: 'Failed to retrieve users' })
-    }
-}
-
-export const handler = (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method === 'GET') {
-        return GET(req, res)
-    }
-
-    res.status(405).json({ message: 'Method Not Allowed' })
-}
-```
-
----
-
-## 🧪 Running Tests
-Tests are written using **Jest** and **Supertest**.
+## 🧪 Testing
 Run tests with:
 ```sh
-npm run test
-```
-
-Example test in `__tests__/api.test.ts`:
-```ts
-import request from 'supertest';
-import { createServer } from 'http';
-import { handler } from '../app/api/users/route';
-import { createRequest, createResponse } from 'node-mocks-http';
-
-describe("API Test", () => {
-  it("should return users", async () => {
-    const server = createServer((req, res) => {
-      // Manually mock Next.js request and response
-      const mockReq = createRequest({
-        method: 'GET',
-        url: '/api/users',  // Mock the URL for the request
-      });
-      const mockRes = createResponse();
-
-      // Call the Next.js API handler
-      handler(mockReq, mockRes);
-
-      // Ensure the response is correctly handled
-      res.write(mockRes._getData());
-      res.end();
-    });
-
-    const res = await request(server).get("/api/users");
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("users");
-  });
-});
+php artisan test
 ```
 
 ---
 
-## 🏗️ Seeding the Database
-The `prisma/seed.ts` script populates initial data:
-```ts
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
-async function main() {
-  await prisma.user.createMany({
-    data: [
-      { name: "Alice", email: "alice@example.com" },
-      { name: "Bob", email: "bob@example.com" }
-    ],
-  })
-}
-
-main()
-  .catch((e) => console.error(e))
-  .finally(() => prisma.$disconnect())
-```
-Run it with:
+## 🔍 API Endpoints
+### **GET /api/users**
+Fetches all users.
 ```sh
-npx prisma db seed
+curl http://127.0.0.1:8000/api/users
 ```
 
 ---
 
-## 📌 Summary
-✅ **Next.js API** with server routes  
-✅ **Prisma ORM** for database management  
-✅ **Jest + Supertest** for API testing  
-✅ **Database seeding** with initial data  
-✅ **PostgreSQL (NeonDatabase recommended)**  
+## 📊 Technologies Used
+- **Laravel** - PHP framework
+- **PostgreSQL** - Database
+- **PestPHP** - Testing framework
+- **Eloquent** - ORM for database management
 
-You’re all set! 🚀 Modify the models, add new API routes, and expand as needed.
+---
+
+## 🎯 Future Enhancements
+- Add authentication
+- Implement more API endpoints
+- Deploy to production
+
+---
+
+**🚀 Happy Coding!**
 
