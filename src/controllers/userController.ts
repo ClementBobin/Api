@@ -1,26 +1,28 @@
-import prisma from '../lib/prismaClient.ts'
+import prisma from '../lib/prismaClient'
 
-export const getUsers = async (req, reply) => {
+import { FastifyRequest, FastifyReply } from 'fastify'
+
+export const getUsers = async (req: FastifyRequest, reply: FastifyReply) => {
   const users = await prisma.user.findMany({
     include: { posts: true },
   })
   reply.send(users)
 }
 
-export const createUser = async (req, reply) => {
-  const { name, email } = req.body
+export const createUser = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { name, email } = req.body as { name: string; email: string }
   try {
     const newUser = await prisma.user.create({
       data: { name, email },
     })
     reply.code(201).send(newUser)
   } catch (error) {
-    reply.code(400).send({ error: 'User creation failed', details: error.message })
+    reply.code(400).send({ error: 'User creation failed', details: (error as Error).message })
   }
 }
 
-export const getUserById = async (req, reply) => {
-  const { id } = req.params
+export const getUserById = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { id } = req.params as { id: string }
   const user = await prisma.user.findUnique({
     where: { id },
     include: { posts: true },

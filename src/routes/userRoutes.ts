@@ -1,6 +1,6 @@
-import { getUsers, createUser, getUserById } from '../controllers/userController.ts'
+import { getUsers, createUser, getUserById } from '../controllers/userController'
 
-export default async function userRoutes(fastify) {
+export default async function userRoutes(fastify : any) {
   fastify.get('/users', getUsers)
 
   fastify.post('/users', {

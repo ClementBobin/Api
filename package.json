@@ -1,11 +1,13 @@
 {
-  "name": "apiorm",
+  "name": "fastify-api",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx src/server.ts",
-    "test": "jest"
+    "dev": "tsx src/app.ts",
+    "test": "jest",
+    "build": "tsc",
+    "start": "node dist/app.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts",

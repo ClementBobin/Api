@@ -6,7 +6,6 @@
       "strict": true,
       "esModuleInterop": true,
       "resolveJsonModule": true,
-      "allowImportingTsExtensions": true,
       "allowJs": true
     }
   }

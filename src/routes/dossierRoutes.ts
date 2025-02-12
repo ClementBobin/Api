@@ -1,6 +1,6 @@
-import { updateDossier } from '../controllers/dossierController.ts'
+import { updateDossier } from '../controllers/dossierController'
 
-export default async function dossierRoutes(fastify) {
+export default async function dossierRoutes(fastify : any) {
   fastify.put(
     '/dossier/:id',
     {

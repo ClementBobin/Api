@@ -4,8 +4,8 @@ import FastifyStatic from '@fastify/static'
 import ScalarApiReference from '@scalar/fastify-api-reference'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import dossierRoutes from './routes/dossierRoutes.ts'
-import userRoutes from './routes/userRoutes.ts'
+import dossierRoutes from './routes/dossierRoutes'
+import userRoutes from './routes/userRoutes'
 
 // Instantiate Fastify
 const fastify = Fastify({ logger: true })
