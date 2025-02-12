@@ -73,10 +73,10 @@ cd Tests
 dotnet test
 ```
 
-## 🔍 GraphQL Scalar UI
+## 🔍 Scalar UI
 Instead of Swagger, this project uses **Scalar UI** for API exploration. Once the server is running, access:
 ```
-http://localhost:5000/graphql
+http://localhost:5000/scalar/v1
 ```
 
 ## 📜 License
