@@ -1,4 +1,5 @@
 using Scalar.AspNetCore;
+using BL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+//builder.Services.AddScoped<IDevisService, DevisService>();
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+});
 
 var app = builder.Build();
 
@@ -30,7 +39,11 @@ if (app.Environment.IsDevelopment())
     // });
 }
 
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 var summaries = new[]
 {
