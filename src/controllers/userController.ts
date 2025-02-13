@@ -1,6 +1,6 @@
 // src/controllers/userController.ts
 import { Request, Response } from 'express';
-import prisma from '../lib/PrismaClient.ts';
+import prisma from '../lib/PrismaClient.js';
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
