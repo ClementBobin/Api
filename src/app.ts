@@ -1,11 +1,8 @@
-import Fastify from 'fastify'
+import fastify from './lib/Fastify'
 import FastifySwagger from '@fastify/swagger'
 import ScalarApiReference from '@scalar/fastify-api-reference'
 import dossierRoutes from './routes/dossierRoutes'
 import userRoutes from './routes/userRoutes'
-
-// Instantiate Fastify
-const fastify = Fastify({ logger: true })
 
 // Set up Swagger
 await fastify.register(FastifySwagger, {
@@ -41,12 +38,11 @@ await fastify.register(ScalarApiReference, {
   },
 })
 
-// Start server
 await fastify.ready()
 fastify.listen({ port: 3000 }, (err, address) => {
-  if (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
-  console.log(`🚀 Server running at ${address}`)
+    if (err) {
+        fastify.log.error(err)
+        process.exit(1)
+    }
+    console.log(`🚀 Server running at ${address}`)
 })
