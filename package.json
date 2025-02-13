@@ -14,7 +14,6 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/jest/bin/jest --runInBand",
     "types:check": "tsc --noEmit",
     "docker:build": "docker build --platform=linux/amd64 -t ${image_name} --build-arg=\"BASE_IMAGE=scalar-base\" -f ./Dockerfile .",
-    "lint:check": "next lint",
     "lint:fix": "next lint --fix"
   },
   "prisma": {
