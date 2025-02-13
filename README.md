@@ -8,8 +8,8 @@ This project is a **Next.js API** setup with **Prisma** for database management,
 ## 📦 Tech Stack
 - **Next.js** – API routes and server-side logic
 - **Prisma** – ORM for database operations
-- **Jest** – Testing framework
-- **Supertest** – API request testing
+- **Jest** – Testing framework [testAPI](https://dev.to/dforrunner/how-to-unit-test-nextjs-13-app-router-api-routes-with-jest-and-react-testing-library-270a) [TestUnit](https://www.prisma.io/docs/orm/prisma-client/testing/unit-testing#mocking-prisma-client)
+- **Supertest** – API request testing 
 - **PostgreSQL** – Database (NeonDatabase recommended)
 
 ---

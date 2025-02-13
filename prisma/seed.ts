@@ -1,12 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/client';
 
 async function main() {
-  await prisma.user.createMany({
+  await prisma.users.createMany({
     data: [
-      { name: "Alice", email: "alice@example.com" },
-      { name: "Bob", email: "bob@example.com" }
+      { name: "Alice", email: "alice@example.com", acceptTermsAndConditions: true },
+      { name: "Bob", email: "bob@example.com", acceptTermsAndConditions: true }
     ],
   });
 }

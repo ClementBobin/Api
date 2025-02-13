@@ -13,17 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    String  @id @default(uuid())
-  name  String
-  email String  @unique
-  posts Post[]
+model Users {
+  id                       Int     @id @default(autoincrement())
+  email                    String  @unique
+  name                     String?
+  acceptTermsAndConditions Boolean
 }
 
-model Post {
-  id        String @id @default(uuid())
-  title     String
-  content   String
-  authorId  String
-  author    User   @relation(fields: [authorId], references: [id])
+model Items {
+  id                       Int     @id @default(autoincrement())
+  name                     String
 }
