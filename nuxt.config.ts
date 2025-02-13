@@ -1,6 +1,8 @@
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@scalar/nuxt'],
+  modules: [
+    '@scalar/nuxt'
+  ],
 
   nitro: {
     experimental: {
@@ -23,10 +25,14 @@ export default defineNuxtConfig({
     pathRouting: {
       basePath: '/docs',
     },
-    spec: {
-      url: 'http://127.0.0.1:3000/api.docs.yaml',
-    },
   },
 
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
   compatibilityDate: '2025-02-11',
 })
