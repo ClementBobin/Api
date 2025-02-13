@@ -1,15 +1,19 @@
 {
-    "compilerOptions": {
-      "target": "ES2020",
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "strict": true,
-      "resolveJsonModule": true
-    },
-    "include": [
-      "src/**/*.ts",
-      "tests/**/*.ts"
-    ]
+  "compilerOptions": {
+    "target": "ESNext",                         // Allow using modern ECMAScript features
+    "module": "ESNext",                         // Use Node.js style modules (ESM)
+    "moduleResolution": "Node",               // Resolve modules like Node.js
+    "outDir": "./dist",                         // Output directory for transpiled code
+    "esModuleInterop": true,                    // Enable commonjs interop
+    "skipLibCheck": true,                       // Skip type checking for declaration files
+    "strict": true,                             // Enable strict type-checking
+    "resolveJsonModule": true,                  // Allow importing JSON files
+    "allowJs": true,                            // Allow JavaScript files
+    "allowImportingTsExtensions": true,         // Allow importing TypeScript extensions
+    "noEmit": true,                             // Do not emit any output (used in testing setup)
+    "baseUrl": ".",                             // Base directory for module resolution
+    "paths": {                                  // Optional: if you use custom paths
+      "@scalar/express-api-reference": ["node_modules/@scalar/express-api-reference/dist/index.d.ts"]
+    }
   }
-  
+}

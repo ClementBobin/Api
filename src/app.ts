@@ -1,15 +1,13 @@
-// src/app.ts
-import express from 'express';
-import router from './routes';
+import { app } from './lib/express.ts';
+import router from './routes/index.ts';
+import { apiReference } from '@scalar/express-api-reference';
+import OpenApiSpecification from './docs/scalar.docs.ts';
 
-const app = express();
+app.use(
+  '/docs',
+  apiReference({spec: {content: OpenApiSpecification,},}),
+)
 
-app.use(express.json());
 app.use('/api', router);
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
-export { app }; // Add this line to export `app`
+export { app };
