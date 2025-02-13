@@ -1,5 +1,5 @@
 ARG BASE_IMAGE
-FROM node:18-bullseye-slim AS builder
+FROM ${BASE_IMAGE} AS builder
 WORKDIR /app
 
 # Copy everything but only install and build the main package and its dependencies
@@ -8,7 +8,7 @@ COPY . ./
 # Install and build the main package and its dependencies
 RUN npm install -g npm
 
-FROM node:18-bullseye-slim AS runner
+FROM ${BASE_IMAGE} AS runner
 WORKDIR /app
 RUN npm install -g npm
 ENV NODE_ENV=production
