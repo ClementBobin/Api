@@ -1,19 +1,13 @@
 module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   transform: {
-    '^.+\\.tsx?$': 'ts-jest', // Use ts-jest for TypeScript files
-    '^.+\\.jsx?$': 'babel-jest', // Use babel-jest for JavaScript files
+    '^.+\\.tsx?$': 'ts-jest',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!@scalar/express-api-reference).+\\.js$', // Ensure @scalar is transformed
+    '/node_modules/(?!@scalar/express-api-reference)',
   ],
-  extensionsToTreatAsEsm: ['.ts', '.tsx'], // Treat TypeScript files as ESM
-  globals: {
-    'ts-jest': {
-      useBabelrc: true,
-    },
-  },
-  preset: 'ts-jest/presets/default-esm', // Add this for ESM support in TypeScript
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1', // Handle .js extension in imports
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
 };

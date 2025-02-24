@@ -25,7 +25,10 @@ const LoginResponseSchema = z.object({
 });
 
 // ✅ Export inferred TypeScript types
-export type CreateUserSchema = z.infer<typeof CreateUserSchema>;
-export type LoginSchema = z.infer<typeof LoginSchema>;
-export type CreateUserResponseSchema = z.infer<typeof CreateUserResponseSchema>;
-export type LoginResponseSchema = z.infer<typeof LoginResponseSchema>;
+export type CreateUserSchemaType = z.infer<typeof CreateUserSchema>;
+export type LoginSchemaType = z.infer<typeof LoginSchema>;
+export type CreateUserResponseSchemaType = z.infer<typeof CreateUserResponseSchema>;
+export type LoginResponseSchemaType = z.infer<typeof LoginResponseSchema>;
+
+// ✅ Export schemas
+export { CreateUserSchema, LoginSchema, CreateUserResponseSchema, LoginResponseSchema };

@@ -1,7 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
 import { apiReference } from '@scalar/express-api-reference';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { Logger } from 'winston';
+import dotenv from 'dotenv';
+import * as process from "node:process";
+
+// Load environment variables from .env file
+dotenv.config();
+
+const port = process.env.PORT || 3000;
 
 // Extend Express.Application to include the `logger` property
 declare global {
@@ -24,7 +32,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "http://localhost:" + port,
         description: "Development server"
       },
       {
@@ -40,6 +48,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 const app = express();
+app.use(helmet());
 
 // Use express.json() middleware
 app.use(express.json());
@@ -89,7 +98,6 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Server start
-const port = 3000;
 app.listen(port, () => {
   app.logger.info(`Server is running on http://localhost:${port}`);
 });

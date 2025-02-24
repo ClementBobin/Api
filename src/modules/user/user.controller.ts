@@ -1,11 +1,11 @@
 import { Request, Response, RequestHandler } from "express";
 import { app } from "../../server";
 import { verifyPassword } from "../../../lib/hash";
-import type { CreateUserSchema, LoginSchema } from "./user.schema";
+import type { CreateUserSchemaType, LoginSchemaType } from "./user.schema";
 import { createUser, findUserByEmail, findUsers } from "./user.service";
 
 export const registerUserHandler: RequestHandler = async (
-  request: Request<{}, {}, CreateUserSchema>,
+  request: Request<{}, {}, CreateUserSchemaType>,
   reply: Response
 ): Promise<void> => {
   try {
@@ -20,7 +20,7 @@ export const registerUserHandler: RequestHandler = async (
 
 
 export const loginHandler: RequestHandler = async (
-  request: Request<{}, {}, LoginSchema>,
+  request: Request<{}, {}, LoginSchemaType>,
   reply: Response
 ): Promise<void> => {
   const user = await app.logger.trackOperationTime(findUserByEmail(request.body.email), "RequestHandler");

@@ -1,8 +1,8 @@
 import { hashPassword } from "../../../lib/hash";
 import prisma from "../../../lib/PrismaClient";
-import type { CreateUserSchema } from "./user.schema";
+import type { CreateUserSchemaType } from "./user.schema";
 
-export async function createUser(input: CreateUserSchema) {
+export async function createUser(input: CreateUserSchemaType) {
   const { password, ...rest } = input;
 
   const { hash, salt } = hashPassword(password);
