@@ -3,21 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import logger from '../lib/logger'; // Assuming the logger is being imported from this path
 
 // Mocking `winston`'s createLogger and its methods
-jest.mock('winston', () => {
-  const originalModule = jest.requireActual('winston');
-  return {
-    ...originalModule,
-    createLogger: jest.fn().mockReturnValue({
-      add: jest.fn(), // Mocking the 'add' method to prevent actual transport additions
-      info: jest.fn(),
-      debug: jest.fn(),
-      log: jest.fn(),
-      transports: [],
-    }),
-    transports: originalModule.transports,
-    format: originalModule.format,
-  };
-});
 
 jest.mock('uuid', () => ({
   v4: jest.fn(),
