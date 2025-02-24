@@ -1,22 +1,15 @@
-// prisma/seed.ts
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/PrismaClient'
 
 async function main() {
-  await prisma.user.create({
-    data: {
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-    },
+  await prisma.users.createMany({
+    data: [
+      { name: "Alice", email: "alice@example.com", password: "password1", salt: "salt1" },
+      { name: "Bob", email: "bob@example.com", password: "password2", salt: "salt2" }
+    ],
   });
-  console.log('Database seeded');
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .then(() => console.log("Seeding completed!"))
+  .catch((e) => console.error(e))
+  .finally(() => prisma.$disconnect());

@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",                          // Use modern ECMAScript features
-    "module": "ESNext",                          // Use Node.js style modules (ESM)
-    "moduleResolution": "Node",                  // Resolve modules like Node.js
-    "outDir": "./dist",                          // Output directory for transpiled code
+    "target": "es5",                             // Target ECMAScript version
+    "module": "commonjs",                        // Module system
+    "moduleResolution": "node",                      // Resolve modules like Node.js
     "esModuleInterop": true,                     // Enable commonjs interop
     "skipLibCheck": true,                        // Skip type checking for declaration files
     "strict": true,                              // Enable strict type-checking
@@ -12,8 +11,7 @@
     "baseUrl": ".",                              // Base directory for module resolution
     "paths": {                                   // Optional: if you use custom paths
       "@scalar/express-api-reference": ["node_modules/@scalar/express-api-reference/dist/index.d.ts"]
-    },
+    },                          // Base directory for module resolution
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],     // Include all TypeScript files in the 'src' directory
-  "exclude": ["node_modules", "dist"]             // Exclude 'node_modules' and 'dist' directories
 }
