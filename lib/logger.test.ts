@@ -1,6 +1,6 @@
 import winston from 'winston';
 import { v4 as uuidv4 } from 'uuid';
-import logger from '../lib/logger'; // Assuming the logger is being imported from this path
+import logger from './logger'; // Assuming the logger is being imported from this path
 
 // Mocking `winston`'s createLogger and its methods
 
@@ -9,10 +9,18 @@ jest.mock('uuid', () => ({
 }));
 
 describe('Logger', () => {
+  let infoMock: jest.SpyInstance;
+  let logMock: jest.SpyInstance;
+  let addMock: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.LOG_TO_CONSOLE = 'true'; // Ensure it's set for every test if needed
     process.env.LOG_LEVEL = 'info'; // Ensure default log level is set
+
+    infoMock = jest.spyOn(winston.createLogger(), 'info').mockImplementation(jest.fn());
+    logMock = jest.spyOn(winston.createLogger(), 'log').mockImplementation(jest.fn());
+    addMock = jest.spyOn(winston.createLogger(), 'add').mockImplementation(jest.fn());
   });
 
   it('should log request start with routeStart', () => {
@@ -30,8 +38,8 @@ describe('Logger', () => {
     logger.routeStart(req);
 
     // Test if info method was called with the correct message
-    expect(winston.createLogger().info).toHaveBeenCalledWith(
-      `HTTP/1.1 GET /test - Request ID: ${requestId} with headers: ${JSON.stringify(req.headers)}`
+    expect(infoMock).toHaveBeenCalledWith(
+        `HTTP/1.1 GET /test - Request ID: ${requestId} with headers: ${JSON.stringify(req.headers)}`
     );
   });
 
@@ -97,7 +105,7 @@ describe('Logger', () => {
     process.env.LOG_LEVEL = 'info';
 
     // Import the logger to trigger the setup
-    require('../lib/logger'); // Ensures the logger setup is called after mocking
+    require('./logger'); // Ensures the logger setup is called after mocking
 
     // Test if the 'add' method is called to add the console transport
     expect(winston.createLogger().add).toHaveBeenCalled();
@@ -112,7 +120,7 @@ describe('Logger', () => {
     process.env.LOG_TO_CONSOLE = 'false';
 
     // Import the logger to trigger the setup
-    require('../lib/logger'); // Ensures the logger setup is called after mocking
+    require('./logger'); // Ensures the logger setup is called after mocking
 
     // Test that the 'add' method is not called for console transport
     expect(winston.createLogger().add).not.toHaveBeenCalled();
@@ -122,7 +130,7 @@ describe('Logger', () => {
     process.env.LOG_TO_FILE = 'true'; // Set this env var to ensure the transport is added
 
     // Import the logger to trigger the setup
-    require('../lib/logger'); // Ensures the logger setup is called after mocking
+    require('./logger'); // Ensures the logger setup is called after mocking
 
     // Test if the 'add' method was called to add the DailyRotateFile transport
     expect(winston.createLogger().add).toHaveBeenCalled();
@@ -137,7 +145,7 @@ describe('Logger', () => {
     process.env.LOG_TO_FILE = 'false';
 
     // Import the logger to trigger the setup
-    require('../lib/logger'); // Ensures the logger setup is called after mocking
+    require('./logger'); // Ensures the logger setup is called after mocking
 
     // Test that the 'add' method is not called for file transport
     expect(winston.createLogger().add).not.toHaveBeenCalled();
