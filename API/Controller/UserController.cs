@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BL;
 using DTO;
-using Microsoft.AspNetCore.Antiforgery;
 
 namespace API.Controllers
 {
@@ -10,12 +9,12 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IAntiforgery _antiforgery;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, IAntiforgery antiforgery)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
-            _antiforgery = antiforgery;
+            _logger = logger;
         }
 
         // Get all devis

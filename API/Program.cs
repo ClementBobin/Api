@@ -2,8 +2,17 @@ using DAL;
 using BL;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Set up Serilog with monthly rolling logs
+Log.Logger = new LoggerConfiguration()
+    .Enrich.With(new StackTraceEnricher())
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -13,13 +22,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddHostedService<LogRetentionService>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddAntiforgery(options =>
-{
-    options.HeaderName = "X-CSRF-TOKEN";
-});
 
 var app = builder.Build();
 // to seed a db
@@ -54,5 +60,8 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+// Add health check endpoint
+app.MapGet("/health", () => Results.Ok(new { Status = "OK", ResponseTime = DateTime.UtcNow }));
 
 app.Run();
