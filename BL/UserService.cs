@@ -1,14 +1,10 @@
-﻿namespace BL;
+﻿using DTO;
 
-using DAL;
-using DTO;
-using DAL.Entities;
-using System.Collections.Generic;
-using System.Linq;
+namespace BL;
 
 public interface IUserService
 {
-    List<UserDTO> GetUsers();
+    List<UserGet> GetUsers();
 }
 
 public class UserService : IUserService
@@ -20,8 +16,8 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public List<UserDTO> GetUsers()
+    public List<UserGet> GetUsers()
     {
-        return _context.Users.Select(u => new UserDTO { Id = u.Id, Name = u.Name }).ToList();
+        return _context.Users.Select(u => new UserGet { Id = u.Id, Name = u.Name }).ToList();
     }
 }
