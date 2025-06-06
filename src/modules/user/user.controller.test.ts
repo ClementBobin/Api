@@ -1,28 +1,28 @@
 import request from 'supertest';
-import express from 'express';
-import { app } from '../../../lib/express';
-import { registerUserHandler, loginHandler, getUsersHandler } from './user.controller';
-import { createUser, findUserByEmail, findUsers } from './user.service';
-import { verifyPassword } from '../../../lib/hash';
+import { app } from '../../lib/express';
+import userRoutes from './user.routes';
+import { createUser, findUserByEmail, findUsers, findUserById } from './user.service';
+import { verifyPassword } from '../../lib/hash';
+import { mockUserWithId } from '../../../__mocks__/mockService';
 
 jest.mock('./user.service');
-jest.mock('../../../lib/hash');
+jest.mock('../../lib/hash');
 
-app.use(express.json());
-app.post('/api/users', registerUserHandler);
-app.post('/api/auth/login', loginHandler);
-app.get('/api/users', getUsersHandler);
+app.use('/api', userRoutes);
 
 describe('User Controller', () => {
     it('Register a new user successfully', async () => {
-        (createUser as jest.Mock).mockResolvedValue({ id: '1', name: 'John Doe', email: 'john@example.com' });
+        // Mock the createUser service to return a user object
+        const mockUser = mockUserWithId();
+
+        (createUser as jest.Mock).mockResolvedValue(mockUser);
         const response = await request(app)
             .post('/api/users')
-            .send({ name: 'John Doe', email: 'john@example.com', password: 'password123' });
+            .send({ name: mockUser.name, email: mockUser.email, password: mockUser.password });
         expect(response.status).toBe(201);
-        expect(response.body).toHaveProperty('id');
-        expect(response.body).toHaveProperty('name', 'John Doe');
-        expect(response.body).toHaveProperty('email', 'john@example.com');
+        expect(response.body.Result).toHaveProperty('id');
+        expect(response.body.Result).toHaveProperty('name', mockUser.name);
+        expect(response.body.Result).toHaveProperty('email', mockUser.email);
     });
 
     it('Fail to register a user with invalid input', async () => {
@@ -33,13 +33,16 @@ describe('User Controller', () => {
     });
 
     it('Login user successfully', async () => {
-        (findUserByEmail as jest.Mock).mockResolvedValue({ email: 'john@example.com', password: 'hashedpassword', salt: 'salt' });
+        // Mock the findUserByEmail
+        const mockUser = mockUserWithId();
+
+        (findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
         (verifyPassword as jest.Mock).mockReturnValue(true);
         const response = await request(app)
             .post('/api/auth/login')
-            .send({ email: 'john@example.com', password: 'password123' });
+            .send({ email: mockUser.email, password: mockUser.password });
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('accessToken');
+        expect(response.body.Result).toHaveProperty('accessToken');
     });
 
     it('Fail to login with invalid credentials', async () => {
@@ -51,9 +54,35 @@ describe('User Controller', () => {
     });
 
     it('Get all users successfully', async () => {
-        (findUsers as jest.Mock).mockResolvedValue([{ id: '1', name: 'John Doe', email: 'john@example.com' }]);
+        const mockUsers = [mockUserWithId(), mockUserWithId()];
+
+        (findUsers as jest.Mock).mockResolvedValue(mockUsers);
         const response = await request(app).get('/api/users');
         expect(response.status).toBe(200);
-        expect(response.body).toBeInstanceOf(Array);
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body.Results).toHaveLength(mockUsers.length);
+    });
+
+    it('Get user by ID successfully', async () => {
+        const mockUser = mockUserWithId();
+
+        (findUserById as jest.Mock).mockResolvedValue(mockUser);
+        const response = await request(app).get(`/api/users/${mockUser.id}`);
+        expect(response.status).toBe(200);
+        expect(response.body.Result).toHaveProperty('id', mockUser.id);
+        expect(response.body.Result).toHaveProperty('name', mockUser.name);
+        expect(response.body.Result).toHaveProperty('email', mockUser.email);
+    });
+
+    it('Fail to get user by non-existent ID', async () => {
+        const userId = '999';
+        (findUserById as jest.Mock).mockResolvedValue(null);
+        const response = await request(app).get(`/api/users/${userId}`);
+        expect(response.status).toBe(404);
+    });
+
+    it('Fail to get user by invalid ID', async () => {
+        const response = await request(app).get('/api/users/invalid-id');
+        expect(response.status).toBe(400);
     });
 });

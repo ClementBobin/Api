@@ -1,28 +1,52 @@
-import { z } from "zod";
+import { z } from 'zod';
+import { createResponseSchema } from '../../lib/docs/server.schema';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
-const userCore = {
-  email: z.string().email(),
-  name: z.string(),
-};
+// Extend Zod with OpenAPI capabilities
+extendZodWithOpenApi(z);
 
-const CreateUserSchema = z.object({
-  ...userCore,
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+export const userCore = z.object ({
+  email: z.string().email().openapi({
+    description: 'The user\'s email address',
+    example: 'example@gmail.com',
+  }),
+  name: z.string().openapi({
+    description: 'The user\'s full name',
+    example: 'John Doe',
+  }),
 });
 
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-})
+export const CreateUserSchema = userCore.extend({
+  password: z.string().min(8, 'Password must be at least 8 characters long').openapi({
+    description: 'The user\'s password',
+    example: 'password123',
+  }),
+}).openapi({description: 'Schema for creating a new user'});
 
-const CreateUserResponseSchema = z.object({
-  id: z.number(),
-  ...userCore,
-});
+export const LoginSchema = z.object({
+  email: z.string().email().openapi({
+    description: 'The user\'s email address for login',
+    example: 'example@gmail.com',
+  }),
+  password: z.string().openapi({
+    description: 'The user\'s password for login',
+    example: 'password123',
+  }),
+}).openapi({description: 'Schema for user login'});
 
-const LoginResponseSchema = z.object({
-  accessToken: z.string(),
-});
+export const CreateUserResponseSchema = userCore.extend({
+  id: z.number().openapi({
+    description: 'The unique identifier for the user',
+    example: 1,
+  }),
+}).openapi({description: 'Response schema for creating a new user'});
+
+export const LoginResponseSchema = z.object({
+  accessToken: z.string().openapi({
+    description: 'JWT access token for authenticated user',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  }),
+}).openapi({description: 'Response schema for user login'});
 
 // ✅ Export inferred TypeScript types
 export type CreateUserSchemaType = z.infer<typeof CreateUserSchema>;
@@ -30,5 +54,5 @@ export type LoginSchemaType = z.infer<typeof LoginSchema>;
 export type CreateUserResponseSchemaType = z.infer<typeof CreateUserResponseSchema>;
 export type LoginResponseSchemaType = z.infer<typeof LoginResponseSchema>;
 
-// ✅ Export schemas
-export { CreateUserSchema, LoginSchema, CreateUserResponseSchema, LoginResponseSchema };
+export const ResponseWithLoginResponseSchema = createResponseSchema(LoginResponseSchema);
+export const ResponseWithCreateUserResponseSchema = createResponseSchema(CreateUserResponseSchema);

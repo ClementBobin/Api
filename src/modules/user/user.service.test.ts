@@ -1,81 +1,56 @@
-import { createUser, findUserByEmail, findUsers } from './user.service'
-import { prismaMock } from '../../../lib/singleton'
+import { createUser, findUserByEmail, findUsers, findUserById } from './user.service';
+import { mockUserWithId } from '../../../__mocks__/mockService';
+import { prismaMock } from '../../lib/db/singleton';
 describe('User Service', () => {
   describe('createUser', () => {
     it('should create a new user', async () => {
-      const input = {
-        email: 'test@example.com',
-        name: 'Test User',
-        password: 'password123',
-      };
+      const mockUser = mockUserWithId();
 
-      const user = {
-        id: 1,
-        email: 'test@example.com',
-        name: 'Test User',
-        salt: 'randomSalt',
-        password: 'hashedPassword',
-      };
+      prismaMock.users.create.mockResolvedValue(mockUser);
 
-      prismaMock.users.create.mockResolvedValue(user);
+      const result = await createUser(mockUser);
 
-      const result = await createUser(input);
-
-      expect(result).toEqual(user);
+      expect(result).toEqual(mockUser);
     });
   });
 
   describe('findUserByEmail', () => {
     it('should find a user by email', async () => {
-      const email = 'test@example.com';
+      const mockUser = mockUserWithId();
 
-      const user = {
-        id: 1,
-        email: 'test@example.com',
-        name: 'Test User',
-        password: 'hashedPassword',
-        salt: 'randomSalt',
-      };
+      prismaMock.users.findUnique.mockResolvedValue(mockUser);
 
-      prismaMock.users.findUnique.mockResolvedValue(user);
+      const result = await findUserByEmail(mockUser.email);
 
-      const result = await findUserByEmail(email);
-
-      expect(result).toEqual(user);
+      expect(result).toEqual(mockUser);
     });
   });
 
   describe('findUsers', () => {
     it('should find all users', async () => {
-      const users = [
-        {
-          id: 1,
-          email: 'test1@example.com',
-          name: 'Test User 1',
-          password: 'defaultPassword',
-          salt: 'defaultSalt',
-        },
-        {
-          id: 2,
-          email: 'test2@example.com',
-          name: 'Test User 2',
-          password: 'hashedPassword1',
-          salt: 'randomSalt1',
-        },
-        {
-          id: 2,
-          email: 'test2@example.com',
-          name: 'Test User 2',
-          password: 'hashedPassword2',
-          salt: 'randomSalt2',
-        },
-      ];
-
-      prismaMock.users.findMany.mockResolvedValue(users);
+      const mockUser = [mockUserWithId(), mockUserWithId()];
+      prismaMock.users.findMany.mockResolvedValue(mockUser);
 
       const result = await findUsers();
 
-      expect(result).toEqual(users);
+      expect(result).toEqual(mockUser);
+    });
+  });
+
+  describe('findUserById', () => {
+    it('should find a user by ID', async () => {
+      const mockUser = mockUserWithId();
+
+      prismaMock.users.findUnique.mockResolvedValue(mockUser);
+
+      const result = await findUserById(mockUser.id);
+      expect(result).toEqual(mockUser);
+    });
+    it('should return null if user not found', async () => {
+      const mockUser = { ...mockUserWithId(), id: 9999 };
+      prismaMock.users.findUnique.mockResolvedValue(null);
+      const result = await findUserById(mockUser.id);
+      expect(result).toBeNull();
     });
   });
 });

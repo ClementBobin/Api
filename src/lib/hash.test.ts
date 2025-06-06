@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from 'crypto';
 import { hashPassword, verifyPassword } from './hash';
 
 describe('Hash Utility Functions', () => {
@@ -31,7 +31,7 @@ describe('Hash Utility Functions', () => {
     it('should fail to verify a password with an incorrect salt', () => {
         const password = 'password123';
         const { hash } = hashPassword(password);
-        const wrongSalt = crypto.randomBytes(16).toString("hex");
+        const wrongSalt = crypto.randomBytes(16).toString('hex');
 
         const isValid = verifyPassword({ candidatePassword: password, salt: wrongSalt, hash });
         expect(isValid).toBe(false);
@@ -49,7 +49,7 @@ describe('Hash Utility Functions', () => {
     it('should generate the same hash for the same password and salt', () => {
         const password = 'password123';
         const { hash, salt } = hashPassword(password);
-        const candidateHash = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
+        const candidateHash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 
         expect(candidateHash).toBe(hash);
     });

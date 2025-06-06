@@ -1,104 +1,179 @@
-import express from "express";
-import { registerUserHandler, loginHandler, getUsersHandler } from "./user.controller";
+import express from 'express';
+import {
+    registerUserHandler,
+    loginHandler,
+    getUsersHandler,
+    getUserByIdHandler
+} from './user.controller';
+import registry from '../../lib/docs/openAPIRegistry';
+import { ResponseError } from '../../lib/docs/server.schema';
+import {
+    CreateUserSchema,
+    LoginSchema,
+    ResponseWithLoginResponseSchema,
+    ResponseWithCreateUserResponseSchema
+} from './user.schema';
 
 const router = express.Router();
 
-/**
- * @openapi
- * /api/users:
- *   post:
- *     summary: Register a new user
- *     description: Creates a new user with the provided details.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 minLength: 8
- *     responses:
- *       201:
- *         description: User created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: number
- *                 name:
- *                   type: string
- *                 email:
- *                   type: string
- *       400:
- *         description: Invalid input
- */
-router.post("/users", registerUserHandler);
+// Register the path for retrieving all capteurs
+registry.registerPath({
+    method: 'post',
+    path: '/api/users',
+    summary: 'Register a new user',
+    tags: ['users'],
+    request: {
+        body: {
+            content: {
+                'application/json': {
+                    schema: CreateUserSchema,
+                },
+            }
+        }
+    },
+    responses: {
+        201: {
+            description: 'User created successfully',
+            content: {
+                'application/json': {
+                    schema: ResponseWithCreateUserResponseSchema,
+                },
+            },
+        },
+        400: {
+            description: 'Invalid input',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+        500: {
+            description: 'Internal server error',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+    },
+});
+router.post('/users', registerUserHandler);
 
-/**
- * @openapi
- * /api/auth/login:
- *   post:
- *     summary: Login user
- *     description: Authenticates a user and returns an access token.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successfully authenticated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *       401:
- *         description: Invalid credentials
- */
-router.post("/auth/login", loginHandler);
+registry.registerPath({
+    method: 'post',
+    path: '/api/auth/login',
+    summary: 'Login user',
+    tags: ['auth'],
+    request: {
+        body: {
+            content: {
+                'application/json': {
+                    schema: LoginSchema,
+                },
+            }
+        }
+    },
+    responses: {
+        200: {
+            description: 'Successfully authenticated',
+            content: {
+                'application/json': {
+                    schema: ResponseWithLoginResponseSchema,
+                },
+            },
+        },
+        401: {
+            description: 'Invalid credentials',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+        500: {
+            description: 'Internal server error',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+    },
+});
 
-/**
- * @openapi
- * /api/users:
- *   get:
- *     summary: Get all users
- *     description: Returns a list of registered users.
- *     responses:
- *       200:
- *         description: A list of users
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: number
- *                   name:
- *                     type: string
- *                   email:
- *                     type: string
- */
-router.get("/users", getUsersHandler);
+router.post('/auth/login', loginHandler);
+
+registry.registerPath({
+    method: 'get',
+    path: '/api/users',
+    summary: 'Get all users',
+    tags: ['users'],
+    responses: {
+        200: {
+            description: 'List of users',
+            content: {
+                'application/json': {
+                    schema: ResponseWithCreateUserResponseSchema,
+                },
+            },
+        },
+        500: {
+            description: 'Internal server error',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+    },
+});
+router.get('/users', getUsersHandler);
+
+registry.registerPath({
+    method: 'get',
+    path: '/api/users/{id}',
+    summary: 'Get user by ID',
+    tags: ['users'],
+    parameters: [
+        {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: {
+                type: 'integer',
+                description: 'ID of the user to retrieve',
+                example: 1,
+            },
+        },
+    ],
+    responses: {
+        200: {
+            description: 'User found',
+            content: {
+                'application/json': {
+                    schema: ResponseWithCreateUserResponseSchema,
+                },
+            },
+        },
+        404: {
+            description: 'User not found',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+        500: {
+            description: 'Internal server error',
+            content: {
+                'application/json': {
+                    schema: ResponseError,
+                },
+            },
+        },
+    },
+});
+router.get('/users/:id', getUserByIdHandler);
 
 export default router;
