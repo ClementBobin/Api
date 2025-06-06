@@ -13,7 +13,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "docker:build": "docker build --platform=linux/amd64 -t myapp:latest -f ./Dockerfile .",
-    "docker:run": "docker run -p 3000:3000 myapp:latest",
+    "docker:run": "docker run -p 3000:3000 --network=api_db_network myapp:latest",
     "types:check": "tsc --noEmit",
     "lint:fix": "eslint . --fix",
     "postinstall": "prisma generate",
