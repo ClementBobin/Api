@@ -13,17 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    String  @id @default(uuid())
-  name  String
-  email String  @unique
-  posts Post[]
+model Users {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String?
+  password String
+  salt String
+  products Products[]
 }
 
-model Post {
-  id        String @id @default(uuid())
-  title     String
-  content   String
-  authorId  String
-  author    User   @relation(fields: [authorId], references: [id])
+model Products {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title String @db.VarChar(255)
+  content String?
+  price Float
+  owner Users @relation(fields: [ownerId], references: [id])
+  ownerId Int
 }
