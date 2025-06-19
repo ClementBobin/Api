@@ -32,6 +32,7 @@ nupkg/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+[Pp]ublish/
 x64/
 x86/
 build/
@@ -43,4 +44,5 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
-API/Logs
+[Ll]ogs/
+.env

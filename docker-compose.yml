@@ -1,0 +1,55 @@
+networks:
+  db_network:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: DotnetApi
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - db_network
+    ports:
+      - "5433:5432"
+
+  dotnet_api-build:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: dotnet_api-build
+    working_dir: /src
+    volumes:
+      - ./:/src
+      - dotnet_publish:/app/publish
+    command: >
+      sh -c "dotnet restore /src/API/API.csproj && \
+             dotnet publish /src/API/API.csproj -c Release -o /app/publish /p:UseAppHost=false"
+    networks:
+      - db_network
+
+  dotnet_api:
+    image: mcr.microsoft.com/dotnet/aspnet:8.0-alpine
+    container_name: dotnet_api
+    working_dir: /app
+    volumes:
+      - dotnet_publish:/app
+      - ./Logs:/app/Logs
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "80:8080"
+    depends_on:
+      dotnet_api-build:
+        condition: service_completed_successfully
+      db:
+        condition: service_started
+    networks:
+      - db_network
+    command: ["dotnet", "/app/API.dll"]
+
+volumes:
+  pgdata:
+  dotnet_publish:
