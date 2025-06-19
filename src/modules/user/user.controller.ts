@@ -31,7 +31,6 @@ export const registerUserHandler: RequestHandler = async (
   }
 };
 
-
 export const loginHandler: RequestHandler = async (
   request: Request<{}, {}, LoginSchemaType>,
   reply: Response

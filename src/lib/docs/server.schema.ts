@@ -7,22 +7,6 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 // Extending Zod with OpenAPI capabilities
 extendZodWithOpenApi(z);
 
-// Defining a schema for HealthCheck using Zod
-export const HealthCheck = z.object({
-    // Status of the service
-    Status: z.string().openapi({ description: 'Status of the service', example: 'OK' }),
-    // Uptime in seconds
-    Uptime: z.string().openapi({ description: 'Uptime in seconds', example: '123456 seconds' }),
-    // Message indicating server status
-    Message: z.string().openapi({ description: 'Message indicating server status', example: 'Server is running' }),
-    // Timestamp of the health check
-    Timestamp: z.string().datetime().openapi({ description: 'Timestamp of the health check', example: '2021-09-01T12:00:00.000Z' }),
-    // API version
-    Version: z.string().openapi({ description: 'Api version', example: '14.17.0' }),
-    // Unix timestamp
-    Unix: z.number().openapi({ description: 'Unix timestamp', example: 1630512000000 })
-}).openapi('HealthCheck', { description: 'Health check details' });
-
 // Function to create a generic response schema dynamically
 export const createResponseSchema = <T extends z.ZodTypeAny>(schema: T) =>
     z.object({
@@ -49,12 +33,6 @@ export const ResponseError = z.object({
     // Error details
     Error: z.any().openapi({ description: 'Error details' }),
 }).openapi('ResponseError', { description: 'Error details' });
-
-// TypeScript type for HealthCheck schema
-export type HealthCheckType = z.infer<typeof HealthCheck>;
-
-// Creating a response schema that includes the HealthCheck schema
-export const ResponseWithHealthCheck = createResponseSchema(HealthCheck);
 
 // TypeScript type for ResponseError schema
 export type ResponseErrorType = z.infer<typeof ResponseError>;
