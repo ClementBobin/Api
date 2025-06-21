@@ -4,5 +4,5 @@ import userRoutes from './modules/user/user.routes';
 import serverRoutes from './modules/server/server.routes';
 
 // Register routes
-app.register(userRoutes, { prefix: '/api/v1/users' });
+app.register(userRoutes, { prefix: '/api/users' });
 app.register(serverRoutes);

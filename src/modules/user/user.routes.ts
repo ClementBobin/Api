@@ -1,5 +1,5 @@
 // src/modules/user/user.routes.ts
-import { FastifyInstance } from 'fastify';
+import type { FastifyInstance } from 'fastify';
 import {
   registerUserHandler,
   getUsersHandler,
