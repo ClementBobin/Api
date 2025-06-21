@@ -1,9 +1,9 @@
 import { configureErrorHandler } from './error-handler-express.config';
-import { mockRequest, mockResponse, mockLogger } from '../../../__mocks__/test-utils';
+import { mockRequest, mockResponse } from '../../../__mocks__/test-utils';
+import logger from '../docs/logger';
 
 describe('Error Handler Middleware', () => {
   it('should log the error and send 500 response', () => {
-    const logger = mockLogger();
     const errorHandler = configureErrorHandler(logger);
     const req = mockRequest();
     const res = mockResponse();

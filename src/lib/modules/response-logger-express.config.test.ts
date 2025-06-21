@@ -1,14 +1,13 @@
 import { configureResponseLogger } from './response-logger-express.config';
-import { mockRequest, mockResponse, mockNext, mockLogger } from '../../../__mocks__/test-utils';
+import { mockRequest, mockResponse, mockNext } from '../../../__mocks__/test-utils';
+import logger from '../docs/logger';
 
 describe('Response Logger Middleware', () => {
-  let logger: ReturnType<typeof mockLogger>;
   let req: ReturnType<typeof mockRequest>;
   let res: ReturnType<typeof mockResponse>;
   let next: ReturnType<typeof mockNext>;
 
   beforeEach(() => {
-    logger = mockLogger();
     req = mockRequest();
     res = mockResponse();
     next = mockNext();
@@ -20,32 +19,35 @@ describe('Response Logger Middleware', () => {
   });
 
   it('should override res.json to format successful response', () => {
+    const originalJson = res.json;
     const middleware = configureResponseLogger(logger);
     middleware(req, res, next);
 
     const testPayload = { data: 'test' };
     res.json(testPayload);
 
-    expect(res.json).toHaveBeenCalledWith({
-      Result: { data: 'test' },
-      GenerationTime_ms: expect.any(Number),
-      Success: true,
-      Message: 'Success'
+    // Now we can check the _json mock which will have received the formatted response
+    expect(originalJson).toHaveBeenCalledWith({
+      result: { data: 'test' },
+      generationTime_ms: expect.any(Number),
+      success: true,
+      message: 'Success'
     });
   });
 
   it('should override res.json to format error response', () => {
+    const originalJson = res.json;
     const middleware = configureResponseLogger(logger);
     middleware(req, res, next);
 
     const testPayload = { isSuccess: false, message: 'Error', error: 'Test error' };
     res.json(testPayload);
 
-    expect(res.json).toHaveBeenCalledWith({
-      Success: false,
-      Message: 'Error',
-      Error: 'Test error',
-      GenerationTime_ms: expect.any(Number)
+    expect(originalJson).toHaveBeenCalledWith({
+      success: false,
+      message: 'Error',
+      error: 'Test error',
+      generationTime_ms: expect.any(Number)
     });
   });
 

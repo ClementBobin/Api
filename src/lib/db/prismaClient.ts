@@ -8,17 +8,17 @@ import { app, closeServer } from '../express';
 const prisma = new PrismaClient();
 
 // Middleware to automatically update the `UpdatedAt` field before update operations
-prisma.$use(async (params, next) => {
-    // Check if the action is 'update' or 'updateMany'
-    if (params.action === 'update' || params.action === 'updateMany') {
-        // If there is data to be updated, set the `UpdatedAt` field to the current date and time
-        if (params.args.data) {
-            params.args.data.UpdatedAt = new Date();
-        }
-    }
-    // Proceed to the next middleware or operation
-    return next(params);
-});
+// prisma.$use(async (params : any, next : any) => {
+//     // Check if the action is 'update' or 'updateMany'
+//     if (params.action === 'update' || params.action === 'updateMany') {
+//         // If there is data to be updated, set the `UpdatedAt` field to the current date and time
+//         if (params.args.data) {
+//             params.args.data.UpdatedAt = new Date();
+//         }
+//     }
+//     // Proceed to the next middleware or operation
+//     return next();
+// });
 
 // Function to test the database connection
 async function testDbConnection() {

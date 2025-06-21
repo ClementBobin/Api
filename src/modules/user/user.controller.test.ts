@@ -20,9 +20,9 @@ describe('User Controller', () => {
             .post('/api/users')
             .send({ name: mockUser.name, email: mockUser.email, password: mockUser.password });
         expect(response.status).toBe(201);
-        expect(response.body.Result).toHaveProperty('id');
-        expect(response.body.Result).toHaveProperty('name', mockUser.name);
-        expect(response.body.Result).toHaveProperty('email', mockUser.email);
+        expect(response.body.result).toHaveProperty('id');
+        expect(response.body.result).toHaveProperty('name', mockUser.name);
+        expect(response.body.result).toHaveProperty('email', mockUser.email);
     });
 
     it('Fail to register a user with invalid input', async () => {
@@ -42,7 +42,7 @@ describe('User Controller', () => {
             .post('/api/auth/login')
             .send({ email: mockUser.email, password: mockUser.password });
         expect(response.status).toBe(200);
-        expect(response.body.Result).toHaveProperty('accessToken');
+        expect(response.body.result).toHaveProperty('accessToken');
     });
 
     it('Fail to login with invalid credentials', async () => {
@@ -60,7 +60,7 @@ describe('User Controller', () => {
         const response = await request(app).get('/api/users');
         expect(response.status).toBe(200);
         expect(response.body).toBeInstanceOf(Object);
-        expect(response.body.Results).toHaveLength(mockUsers.length);
+        expect(response.body.results).toHaveLength(mockUsers.length);
     });
 
     it('Get user by ID successfully', async () => {
@@ -69,9 +69,9 @@ describe('User Controller', () => {
         (findUserById as jest.Mock).mockResolvedValue(mockUser);
         const response = await request(app).get(`/api/users/${mockUser.id}`);
         expect(response.status).toBe(200);
-        expect(response.body.Result).toHaveProperty('id', mockUser.id);
-        expect(response.body.Result).toHaveProperty('name', mockUser.name);
-        expect(response.body.Result).toHaveProperty('email', mockUser.email);
+        expect(response.body.result).toHaveProperty('id', mockUser.id);
+        expect(response.body.result).toHaveProperty('name', mockUser.name);
+        expect(response.body.result).toHaveProperty('email', mockUser.email);
     });
 
     it('Fail to get user by non-existent ID', async () => {

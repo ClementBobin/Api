@@ -21,7 +21,7 @@ registry.registerPath({
     method: 'post',
     path: '/api/users',
     summary: 'Register a new user',
-    tags: ['users'],
+    tags: ['Users'],
     request: {
         body: {
             content: {
@@ -64,7 +64,7 @@ registry.registerPath({
     method: 'post',
     path: '/api/auth/login',
     summary: 'Login user',
-    tags: ['auth'],
+    tags: ['Auth'],
     request: {
         body: {
             content: {
@@ -108,7 +108,7 @@ registry.registerPath({
     method: 'get',
     path: '/api/users',
     summary: 'Get all users',
-    tags: ['users'],
+    tags: ['Users'],
     responses: {
         200: {
             description: 'List of users',
@@ -134,7 +134,7 @@ registry.registerPath({
     method: 'get',
     path: '/api/users/{id}',
     summary: 'Get user by ID',
-    tags: ['users'],
+    tags: ['Users'],
     parameters: [
         {
             name: 'id',

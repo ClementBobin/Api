@@ -13,27 +13,29 @@ describe('Server.schema tests', () => {
         it('should validate a correct ResponseWithHealthCheck object', () => {
             // Define a valid ResponseWithHealthCheck object
             const validResponse = {
-                Result: {
-                    Status: 'OK',
-                    Uptime: '123456 seconds',
-                    Message: 'Server is running',
-                    Timestamp: '2021-09-01T12:00:00.000Z',
-                    Version: '14.17.0',
-                    Unix: 1630512000000
+                result: {
+                    status: 'OK',
+                    uptime: '123456 seconds',
+                    message: 'Server is running',
+                    timestamp: '2021-09-01T12:00:00.000Z',
+                    version: '14.17.0',
+                    environment: 'production',
+                    unix: 1630512000000
                 },
-                Results: [
+                results: [
                     {
-                        Status: 'OK',
-                        Uptime: '123456 seconds',
-                        Message: 'Server is running',
-                        Timestamp: '2021-09-01T12:00:00.000Z',
-                        Version: '14.17.0',
-                        Unix: 1630512000000
+                        status: 'OK',
+                        uptime: '123456 seconds',
+                        message: 'Server is running',
+                        timestamp: '2021-09-01T12:00:00.000Z',
+                        version: '14.17.0',
+                        environment: 'production',
+                        unix: 1630512000000
                     }
                 ],
-                GenerationTime_ms: 123.456,
-                Success: true,
-                Message: 'Success'
+                generationTime_ms: 123.456,
+                success: true,
+                message: 'Success'
             };
             // Expect the ResponseWithHealthCheck object to be parsed without throwing an error
             expect(() => ResponseWithHealthCheck.parse(validResponse)).not.toThrow();
@@ -43,18 +45,19 @@ describe('Server.schema tests', () => {
         it('should invalidate an incorrect ResponseWithHealthCheck object', () => {
             // Define an invalid ResponseWithHealthCheck object
             const invalidResponse = {
-                Result: {
-                    Status: 'OK',
-                    Uptime: '123456 seconds',
-                    Message: 'Server is running',
-                    Timestamp: '2021-09-01T12:00:00.000Z',
-                    Version: '14.17.0',
-                    Unix: 1630512000000
+                result: {
+                    status: 'OK',
+                    uptime: '123456 seconds',
+                    message: 'Server is running',
+                    timestamp: '2021-09-01T12:00:00.000Z',
+                    version: '14.17.0',
+                    environment : 'production',
+                    unix: 1630512000000
                 },
-                Results: 'invalid-results',
-                GenerationTime_ms: 'invalid-generationtime',
-                Success: true,
-                Message: 'Success'
+                results: 'invalid-results',
+                generationTime_ms: 'invalid-generationtime',
+                success: true,
+                message: 'Success'
             };
             // Expect the ResponseWithHealthCheck object to throw an error when parsed
             expect(() => ResponseWithHealthCheck.parse(invalidResponse)).toThrow();
@@ -68,10 +71,10 @@ describe('Server.schema tests', () => {
         it('should validate a correct ResponseError object', () => {
             // Define a valid ResponseError object
             const validResponseError: ResponseErrorType = {
-                GenerationTime_ms: '123456ms',
-                Success: false,
-                Message: 'Error',
-                Error: { detail: 'Some error detail' }
+                generationTime_ms: '123456ms',
+                success: false,
+                message: 'Error',
+                error: { detail: 'Some error detail' }
             };
             // Expect the ResponseError object to be parsed without throwing an error
             expect(() => ResponseError.parse(validResponseError)).not.toThrow();

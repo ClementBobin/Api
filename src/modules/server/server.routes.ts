@@ -17,7 +17,7 @@ const router = express.Router();
 // Register OpenAPI paths
 registry.registerPath({
     method: 'get',
-    path: '/health',
+    path: '/api/health',
     summary: 'Health check endpoint',
     tags: ['Server'],
     responses: {
@@ -40,14 +40,44 @@ registry.registerPath({
     },
   });
   
-router.post('/health', healthController);
+router.get('/health', healthController);
 
 if (process.env.DOC_ENABLE === 'true') {
-    // Swagger documentation route
-    router.use(
-        '/docs',
-        apiReference({ spec: { content: docs } }),
-    );
+  registry.registerPath({
+    method: 'get',
+    path: '/api/docs',
+    summary: 'API documentation',
+    tags: ['Server'],
+    responses: {
+      200: {
+        description: 'API documentation',
+      },
+    },
+  });
+
+  // Swagger documentation route
+  router.use(
+      '/docs',
+      apiReference({ spec: { content: docs } }),
+  );
+
+  registry.registerPath({
+    method: 'get',
+    path: '/api/openapi.json',
+    summary: 'OpenAPI JSON documentation',
+    tags: ['Server'],
+    responses: {
+      200: {
+        description: 'OpenAPI JSON documentation',
+      },
+    },
+  });
+
+  // OpenAPI JSON route
+  router.get('/openapi.json', (req, res) => {
+    const openApiDocument = docs();
+    res.json(openApiDocument);
+  });
 }
 
 export default router;

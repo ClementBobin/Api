@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:alpine
-    container_name: postgres_db
+    container_name: postgres_db_api
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -15,6 +13,38 @@ services:
     networks:
       - db_network
     restart: always
+
+  express_app:
+    image: node:22-alpine
+    container_name: express_app
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "3000:3000"
+    networks:
+      - db_network
+    environment:
+      LOG_DIRECTORY: ./logs
+      PORT: 3000
+      URL: http://localhost
+      KEEP_LOGS_FOR: 7d
+      KEEP_LOGS_IN_PROD: true
+      LOG_LEVEL: info
+      DATE_PATERNS: YYYY-MM-DD
+      DATE_FORMAT: YYYY-MM-DD HH:mm:ss
+      UNIX_FORMAT: true
+      LOG_TO_FILE: true
+      LOG_TO_CONSOLE: true
+      DATABASE_URL: "postgres://user:password@postgres_db_api:5432/userdb"
+      DOC_ENABLE: true
+    command: >
+      sh -c "npm run build && \
+              npm install && \
+              npm run start"
 
 networks:
   db_network:

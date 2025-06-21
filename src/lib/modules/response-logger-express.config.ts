@@ -9,6 +9,10 @@ export const configureResponseLogger = (logger: Logger) => {
     const originalJson = res.json.bind(res);
 
     res.json = function (this: Response, payload: any): Response {
+      if (typeof payload === 'object' && payload !== null && payload.openapi) {
+        return originalJson(payload);
+      }
+
       const end = process.hrtime();
       const durationInMs = (end[0] * 1e9 + end[1] - (start[0] * 1e9 + start[1])) / 1e6;
 
@@ -17,9 +21,9 @@ export const configureResponseLogger = (logger: Logger) => {
       let responsePayload;
 
       if (Array.isArray(payload)) {
-        payload = { Results: payload };
+        payload = { results: payload };
       } else if (typeof payload === 'object' && payload !== null) {
-        payload = { Result: payload };
+        payload = { result: payload };
       }
 
       if (override) {
@@ -27,16 +31,16 @@ export const configureResponseLogger = (logger: Logger) => {
       } else if (isSuccess) {
         responsePayload = {
           ...payload,
-          GenerationTime_ms: durationInMs,
-          Success: true,
-          Message: message,
+          generationTime_ms: durationInMs,
+          success: true,
+          message: message,
         };
       } else {
         responsePayload = {
-          Success: false,
-          Message: message,
-          Error: error,
-          GenerationTime_ms: durationInMs,
+          success: false,
+          message: message,
+          error: error,
+          generationTime_ms: durationInMs,
         };
       }
 

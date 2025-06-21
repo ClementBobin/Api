@@ -11,13 +11,13 @@ export const healthController: RequestHandler = async (
         app.logger.info('Health check endpoint called'); // Log the health check call
 
         const result = {
-            Status: 'OK',
-            Uptime: `${process.uptime()} seconds`,
-            Message: 'Server is running',
-            Timestamp: new Date().toISOString(),
-            Version: packageJson.version, // Get the version from package.json
-            Environment: nodeEnv, // Get the environment from environment variables
-            Unix: new Date().getTime()
+            status: 'OK',
+            uptime: `${process.uptime()} seconds`,
+            message: 'Server is running',
+            timestamp: new Date().toISOString(),
+            version: packageJson.version, // Get the version from package.json
+            environment: nodeEnv, // Get the environment from environment variables
+            unix: new Date().getTime()
         };
 
         const ValidateHealthCheck = HealthCheck.strict().safeParse(result); // Validate the health check response
