@@ -14,9 +14,10 @@ const logFileEnabled = process.env.LOG_TO_FILE === 'true';
 const keepLogsInProd = process.env.KEEP_LOGS_IN_PROD === 'true';
 const logDirectory = process.env.LOG_DIRECTORY || './logs';
 const dateFormat = process.env.DATE_FORMAT || 'YYYY-MM-DD HH:mm:ss';
+const storageDateFormat = process.env.STORAGE_DATE_PATTERNS || 'YYYY-MM';
 const unixFormat = process.env.UNIX_FORMAT === 'true';
 const nodeEnv = process.env.NODE_ENV || 'development';
 const keepLogsFor = process.env.KEEP_LOGS_FOR || '90d';
 const docEnable = process.env.DOC_ENABLE === 'true';
 
-export { httpsPort, packageJson, productionDomain, logLevel, logFileEnabled, keepLogsInProd, logDirectory, dateFormat, unixFormat, nodeEnv, keepLogsFor, docEnable };
+export { httpsPort, packageJson, productionDomain, logLevel, logFileEnabled, keepLogsInProd, logDirectory, dateFormat, storageDateFormat, unixFormat, nodeEnv, keepLogsFor, docEnable };
