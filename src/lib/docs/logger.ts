@@ -2,10 +2,8 @@
 import winston from 'winston'; // Import winston for logging
 import { v4 as uuidv4 } from 'uuid'; // Import uuid for generating unique IDs
 import DailyRotateFile from 'winston-daily-rotate-file'; // Import DailyRotateFile for log rotation
-import dotenv from 'dotenv'; // Import dotenv to load environment variables
 
-// Load environment variables from .env file
-dotenv.config();
+import { dateFormat, unixFormat, logLevel, logFileEnabled, logDirectory, keepLogsInProd, keepLogsFor, storageDateFormat, nodeEnv } from '../config/env.config';
 
 // Define custom colors for log levels
 const customColors = {
@@ -33,35 +31,33 @@ const logLevels = {
 const logger = winston.createLogger({ levels: logLevels });
 
 // Check if logs should be output to the console
-if (process.env.LOG_TO_CONSOLE === 'true') {
-  logger.add(new winston.transports.Console({
-    level: process.env.LOG_LEVEL || 'info', // Set default log level
-    format: winston.format.combine(
-      winston.format.colorize(), // Add colorization to logs
-      winston.format.timestamp({ format: process.env.DATE_FORMAT || 'YYYY-MM-DD HH:mm:ss' }), // Add timestamp in specified format
-      winston.format.printf(({ timestamp, level, message }) => {
-        // Optionally add Unix timestamp
-        const unixTime = process.env.UNIX_FORMAT === 'true' ? ` ${Math.floor(new Date(timestamp as string).getTime() / 1000)}` : '';
-        return `[${timestamp}${unixTime}] ${level}: ${message}`; // Format log message
-      }),
-    ),
-  }));
-}
+logger.add(new winston.transports.Console({
+  level: logLevel, // Set default log level
+  format: winston.format.combine(
+    winston.format.colorize(), // Add colorization to logs
+    winston.format.timestamp({ format: dateFormat }), // Add timestamp in specified format
+    winston.format.printf(({ timestamp, level, message }) => {
+      // Optionally add Unix timestamp
+      const unixTime = unixFormat ? ` ${Math.floor(new Date(timestamp as string).getTime() / 1000)}` : '';
+      return `[${timestamp}${unixTime}] ${level}: ${message}`; // Format log message
+    }),
+  ),
+}));
 
 // Check if logs should be output to a file and if logs should be kept in production
-if (process.env.LOG_TO_FILE === 'true' && !(process.env.ENVIRONMENT == 'production' && process.env.KEEP_LOGS_IN_PROD == 'false')) {
+if (logFileEnabled && !(nodeEnv == 'production' && keepLogsInProd == false)) {
   logger.add(new DailyRotateFile({
-    level: process.env.LOG_LEVEL || 'info', // Set log level
-    dirname: process.env.LOG_DIRECTORY || './logs', // Directory from .env
+    level: logLevel, // Set log level
+    dirname: logDirectory, // Directory from .env
     filename: '%DATE%.log', // Filename pattern: LOG-YYYY-MM-DD.log
-    datePattern: process.env.DATE_PATTERNS || 'YYYY-MM', // Rotate log files daily
+    datePattern: storageDateFormat, // Rotate log files daily
     zippedArchive: true, // Compress old logs (e.g., .gz)
-    maxFiles: `${process.env.KEEP_LOGS_FOR || '90d'}`, // Retain logs for the last 90 days
+    maxFiles: `${keepLogsFor}`, // Retain logs for the last 90 days
     format: winston.format.combine(
-      winston.format.timestamp({ format: process.env.DATE_FORMAT || 'YYYY-MM-DD HH:mm:ss' }), // Add timestamp in specified format
+      winston.format.timestamp({ format: dateFormat }), // Add timestamp in specified format
       winston.format.printf(({ timestamp, level, message }) => {
         // Optionally add Unix timestamp
-        const unixTime = process.env.UNIX_FORMAT === 'true' ? ` ${Math.floor(new Date(timestamp as string).getTime() / 1000)}` : '';
+        const unixTime = unixFormat ? ` ${Math.floor(new Date(timestamp as string).getTime() / 1000)}` : '';
         return `[${timestamp}${unixTime}] ${level}: ${message}`; // Format log message
       })
     ),
@@ -103,7 +99,7 @@ logger.routeEnd = function (req: any, res: any, id: string, durationInMs: number
 
 // Implement logWithErrorHandling method to handle errors properly
 logger.logWithErrorHandling = function(msg: any, error: any, hasSecret: boolean = false, level: string = 'error'): void {
-  if (hasSecret && process.env.ENVIRONMENT !== 'development') {
+  if (hasSecret && nodeEnv !== 'development') {
     return; // Do not log if hasSecret is true and not in development environment
   } else {
     // If the message is an error, log the stack trace
