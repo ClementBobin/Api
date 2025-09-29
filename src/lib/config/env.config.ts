@@ -18,5 +18,8 @@ const keepLogsFor = process.env.KEEP_LOGS_FOR || '90d';
 const docEnable = process.env.DOC_ENABLE === 'true';
 const rememberIpMinutes = parseInt(process.env.REMEMBER_IP_MINUTES || '5', 10);
 const numberRequestPerIp = parseInt(process.env.NUMBER_REQUEST_PER_IP || '80', 10);
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : [url, productionUrl];
 
-export { httpsPort, url, packageJson, productionUrl, logLevel, logFileEnabled, keepLogsInProd, logDirectory, dateFormat, storageDateFormat, unixFormat, nodeEnv, keepLogsFor, docEnable, rememberIpMinutes, numberRequestPerIp };
+export { httpsPort, url, packageJson, productionUrl, logLevel, logFileEnabled, keepLogsInProd, logDirectory, dateFormat, storageDateFormat, unixFormat, nodeEnv, keepLogsFor, docEnable, rememberIpMinutes, numberRequestPerIp, allowedOrigins };
