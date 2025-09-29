@@ -1,9 +1,10 @@
 import rateLimit from 'express-rate-limit';
+import { rememberIpMinutes, numberRequestPerIp } from '../config/env.config';
 
 export const configureRateLimit = () => {
   return rateLimit({
-    windowMs: (Number(process.env.REMEMBER_IP_MINUTES) || 15) * 60 * 1000,
-    max: Number(process.env.NUMBER_REQUEST_PER_IP) || 100,
+    windowMs: rememberIpMinutes * 60 * 1000,
+    max: numberRequestPerIp,
     message: {
       isSuccess: false,
       message: 'Too many requests, please try again later.'
