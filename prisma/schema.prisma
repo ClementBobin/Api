@@ -9,26 +9,69 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./IoT-DB.db"
 }
 
-model Users {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String?
-  password String
-  salt String
-  products Products[]
+model Capteur {
+  DevEUI        String    @id
+  AppEUI        String
+  IdCapteurType String       //@db.UniqueIdentifier // postgresql
+  Description   String?
+  Commentaire   String?
+  Name          String
+  LowBattery    Boolean   @default(false)
+  CreatedAt     DateTime? @default(now())
+  UpdatedAt     DateTime? @default(now()) @updatedAt
+
+  CapteurType     CapteurType?     @relation(fields: [IdCapteurType], references: [Id], onDelete: Cascade)
+  SiteHasCapteurs SiteHasCapteur[]
+  RelevesCapteur  ReleverCapteur[]
 }
 
-model Products {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title String @db.VarChar(255)
-  content String?
-  price Float
-  owner Users @relation(fields: [ownerId], references: [id])
-  ownerId Int
+model CapteurType {
+  Id        String    @id @default(uuid()) //@db.UniqueIdentifier // postgresql
+  Name      String
+  Type      String
+  ModelName String
+  Module    String
+  CreatedAt DateTime? @default(now())
+  UpdatedAt DateTime? @default(now()) @updatedAt
+  Capteurs Capteur[]
+}
+
+model ReleverCapteur {
+  Id        String    @id @default(uuid()) //@db.UniqueIdentifier // postgresql
+  DevEUI    String
+  Value        Float?
+  ValueRaw     Float
+  ValueType String?
+  ValueTypeRaw String?
+  Time      DateTime  @default(now())
+  CreatedAt DateTime? @default(now())
+  UpdatedAt DateTime? @default(now()) @updatedAt
+
+  Capteur Capteur? @relation(fields: [DevEUI], references: [DevEUI], onDelete: Cascade)
+}
+
+model Site {
+  Id        String    @id @default(uuid()) //@db.UniqueIdentifier // postgresql
+  Name      String
+  CreatedAt DateTime? @default(now())
+  UpdatedAt DateTime? @default(now()) @updatedAt
+
+  SiteHasCapteurs SiteHasCapteur[]
+}
+
+model SiteHasCapteur {
+  IdSite      String    //@db.UniqueIdentifier // postgresql
+  DevEUI      String
+  Commentaire String?
+  CreatedAt   DateTime? @default(now())
+  UpdatedAt   DateTime? @default(now()) @updatedAt
+
+  Site    Site    @relation(fields: [IdSite], references: [Id], onDelete: Cascade)
+  Capteur Capteur @relation(fields: [DevEUI], references: [DevEUI], onDelete: Cascade)
+
+  @@id([IdSite, DevEUI])
 }
