@@ -13,6 +13,16 @@ datasource db {
   url      = "file:./IoT-DB.db"
 }
 
+model Users {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+  salt     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
 model Capteur {
   DevEUI        String    @id
   AppEUI        String

@@ -58,7 +58,7 @@ registry.registerPath({
         },
     },
 });
-router.post('/users', registerUserHandler);
+router.post('/', registerUserHandler);
 
 registry.registerPath({
     method: 'post',
@@ -128,7 +128,7 @@ registry.registerPath({
         },
     },
 });
-router.get('/users', getUsersHandler);
+router.get('/', getUsersHandler);
 
 registry.registerPath({
     method: 'get',
@@ -174,6 +174,6 @@ registry.registerPath({
         },
     },
 });
-router.get('/users/:id', getUserByIdHandler);
+router.get('/:id', getUserByIdHandler);
 
 export default router;

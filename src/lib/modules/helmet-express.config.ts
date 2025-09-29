@@ -1,11 +1,18 @@
 import helmet from 'helmet';
+import { nodeEnv } from '../config/env.config';
 
 export const configureHelmet = () => {
+  const isProd = nodeEnv === 'production';
+
   return helmet({
     contentSecurityPolicy: {
-      directives: {
-        'script-src': ['\'self\'', 'https://cdn.jsdelivr.net'],
-      },
+      directives: isProd
+        ? {
+            'default-src': ['\'none\''],
+          }
+        : {
+            'script-src': ['\'self\'', 'https://cdn.jsdelivr.net'],
+          },
     },
   });
 };

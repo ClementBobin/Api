@@ -29,6 +29,7 @@ export const healthController: RequestHandler = async (
 
         reply.status(200).json(result); // Send the health check response
     } catch (e) {
-        reply.status(500).send({ error: 'Internal Server Error' });
+        app.logger.logWithErrorHandling('Error in health check endpoint:', e); // Log unexpected errors
+        reply.status(500).send({ error: 'Internal Server Error' }); // Send generic error response
     }
   };

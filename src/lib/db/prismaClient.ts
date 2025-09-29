@@ -4,21 +4,10 @@ import { PrismaClient } from '@prisma/client';
 // Import the server and app instances from the express setup
 import { app, closeServer } from '../express';
 
-// Create an instance of PrismaClient to interact with the database
-const prisma = new PrismaClient();
-
 // Middleware to automatically update the `UpdatedAt` field before update operations
-// prisma.$use(async (params : any, next : any) => {
-//     // Check if the action is 'update' or 'updateMany'
-//     if (params.action === 'update' || params.action === 'updateMany') {
-//         // If there is data to be updated, set the `UpdatedAt` field to the current date and time
-//         if (params.args.data) {
-//             params.args.data.UpdatedAt = new Date();
-//         }
-//     }
-//     // Proceed to the next middleware or operation
-//     return next();
-// });
+const prisma = new PrismaClient({
+    log: ['info', 'warn', 'error'],
+});
 
 // Function to test the database connection
 async function testDbConnection() {

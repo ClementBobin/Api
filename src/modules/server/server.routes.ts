@@ -1,5 +1,3 @@
-
-
 import express from 'express';
 import {
   healthController
@@ -11,6 +9,8 @@ import {
 } from './server.schema';
 import { apiReference } from '@scalar/express-api-reference';
 import { docs } from '../../lib/docs/docOpenApi';
+import { app } from '../../lib/express';
+import { docEnable } from '../../lib/config/env.config';
 
 const router = express.Router();
 
@@ -42,7 +42,7 @@ registry.registerPath({
   
 router.get('/health', healthController);
 
-if (process.env.DOC_ENABLE === 'true') {
+if (docEnable) {
   registry.registerPath({
     method: 'get',
     path: '/api/docs',

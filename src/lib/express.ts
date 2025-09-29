@@ -1,13 +1,19 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
-import { Logger } from 'winston';
+import type { Logger } from 'winston';
 import logger from './docs/logger';
+import fs from 'fs';
+import https from 'https';
 import http from 'http';
-import { httpsPort } from './config/env.config';
+import { httpsPort, url } from './config/env.config';
 import { configureHelmet } from './modules/helmet-express.config';
 import { configureRateLimit } from './modules/rate-limit-express.config';
 import { configureCustomHeaders } from './modules/custom-headers-express.config';
 import { configureErrorHandler } from './modules/error-handler-express.config';
 import { configureResponseLogger } from './modules/response-logger-express.config';
+import { configureCors } from './modules/cors.config';
 
 declare global {
   // eslint-disable-next-line no-unused-vars
@@ -24,12 +30,15 @@ declare global {
 
 const app = express();
 
+app.set('trust proxy', true);
+
 // Attach logger to app
 app.logger = logger;
 
 // Configure middleware
 app.use(configureHelmet());
 app.use(configureRateLimit());
+app.use(configureCors(app.logger));
 app.use(configureCustomHeaders());
 app.use(express.json());
 app.use(configureResponseLogger(app.logger));
@@ -45,7 +54,7 @@ const startServer = (port?: number) => {
   }
   
   server = app.listen(actualPort, () => {
-    app.logger.info(`Server is running on port ${actualPort}`);
+    app.logger.info(`Server is running on port ${url}:${actualPort}`);
   });
   
   return server;
@@ -65,11 +74,36 @@ const closeServer = () => {
         }
       });
     } else {
-      app.logger.warn('Server instance not available, skipping close operation');
+      app.logger.info('Server instance not available, skipping close operation');
       resolve();
     }
   });
 };
+
+if (process.env.NODE_ENV === 'production') {
+  // In production, you might want to start an HTTPS server
+  const privateKey = fs.readFileSync('certs/server.key', 'utf8');
+  const certificate = fs.readFileSync('certs/server.crt', 'utf8');
+  const ca = fs.readFileSync('certs/ca.crt', 'utf8');
+
+  const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca,
+    honorCipherOrder: true,
+    secureOptions: require('constants').SSL_OP_NO_TLSv1 | require('constants').SSL_OP_NO_TLSv1_1, // Disable TLS 1.0 & 1.1
+    ciphers: [
+      'ECDHE-ECDSA-AES256-GCM-SHA384',
+      'ECDHE-RSA-AES256-GCM-SHA384',
+      'ECDHE-ECDSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES128-GCM-SHA256'
+    ].join(':'),
+  };
+
+  server = https.createServer(credentials, app).listen(httpsPort, () => {
+    app.logger.info(`HTTPS Server is running on port ${url}:${httpsPort}`);
+  });
+}
 
 if (process.env.NODE_ENV !== 'test') {
   startServer();
