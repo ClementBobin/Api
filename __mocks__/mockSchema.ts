@@ -1,21 +1,61 @@
 import { faker } from '@faker-js/faker';
 
-// Helper function to generate mock Users data
-export const generateMockUsers = () => ({
-    id: faker.number.int({ min: 1, max: 2147483647 }), // Ensure the ID fits within a 32-bit signed integer
-    email: faker.internet.email(),
-    name: faker.person.firstName(), // Optional field
-    password: faker.internet.password(),
-    salt: faker.string.alphanumeric(16),
-});
+export const capteurTypes = Array.from({ length: 5 }, () => ({
+  Id: faker.string.uuid(),
+  Name: faker.commerce.department(),
+  Module: faker.commerce.productAdjective(),
+  Type: faker.commerce.productMaterial(),
+  ModelName: faker.commerce.productName(),
+}));
 
-// Helper function to generate mock Products data
-export const generateMockProducts = (ownerId: number) => ({
-    id: faker.number.int({ min: 1, max: 2147483647 }), // Prisma will autoincrement this in the database
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
-    title: faker.commerce.productName(),
-    content: faker.lorem.sentence(), // Optional field
-    price: parseFloat(faker.commerce.price()),
-    ownerId, // Foreign key to Users
-});
+export const sites = Array.from({ length: 10 }, () => ({
+  Id: faker.string.uuid(),
+  Name: faker.company.name(),
+}));
+
+export const capteurs = (capteurTypes: { Id: string }[]) =>
+  Array.from({ length: 20 }, () => ({
+    DevEUI: faker.string.uuid(),
+    AppEUI: faker.string.uuid(),
+    IdCapteurType: faker.helpers.arrayElement(capteurTypes).Id,
+    Description: faker.lorem.sentence(),
+    Commentaire: faker.lorem.sentence(),
+    Name: faker.commerce.productName(),
+    LowBattery: faker.datatype.boolean(),
+  }));
+
+export const siteHasCapteurs = (
+  capteurs: { DevEUI: string }[],
+  sites: { Id: string }[]
+) => {
+  const uniquePairs = new Set<string>();
+  const data: { IdSite: string; DevEUI: string; Commentaire: string }[] = [];
+
+  while (data.length < 30) {
+    const IdSite = faker.helpers.arrayElement(sites).Id;
+    const DevEUI = faker.helpers.arrayElement(capteurs).DevEUI;
+    const pair = `${IdSite}-${DevEUI}`;
+
+    if (!uniquePairs.has(pair)) {
+      uniquePairs.add(pair);
+      data.push({
+        IdSite,
+        DevEUI,
+        Commentaire: faker.lorem.sentence(),
+      });
+    }
+  }
+
+  return data;
+};
+
+export const releverCapteurs = (capteurs: { DevEUI: string }[]) =>
+  Array.from({ length: 50 }, () => ({
+    Time: faker.date.recent().toISOString(),
+    Id: faker.string.uuid(),
+    ValueType: faker.helpers.arrayElement(['A', 'V', 'mA']),
+    DevEUI: faker.helpers.arrayElement(capteurs).DevEUI,
+    Value: faker.number.float({ min: 0, max: 100 }),
+    ValueRaw: faker.number.float({ min: 0, max: 100 }),
+    ValueTypeRaw: faker.helpers.arrayElement(['A', 'V', 'mA']),
+  }));
